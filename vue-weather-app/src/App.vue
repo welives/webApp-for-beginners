@@ -22,7 +22,7 @@
           <div class="location">
             {{ weather.name }}, {{ weather.sys.country }}
           </div>
-          <div class="date">{{ dateBuilder() }}</div>
+          <div class="date">{{ dateBuilder(new Date()) }}</div>
         </div>
 
         <div class="weather-box">
@@ -54,16 +54,16 @@ export default {
       fetch(
         `${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`,
       )
-        .then((response) => {
-          return response.json()
+        .then((response) => response.json())
+        .then((result) => {
+          this.setResults(result)
+          this.query = ''
         })
-        .then(this.setResults)
     },
     setResults(data) {
       this.weather = data
     },
-    dateBuilder() {
-      const d = new Date()
+    dateBuilder(d) {
       const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       const days = [
         '星期日',

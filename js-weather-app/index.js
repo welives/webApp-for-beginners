@@ -7,16 +7,14 @@ const search = document.querySelector('.search-bar')
 search.addEventListener('keypress', setQuery)
 
 function setQuery(e) {
-  if (e.code === 'Enter') {
+  if (e.key === 'Enter') {
     getResults(search.value)
   }
 }
 
 function getResults(query) {
   fetch(`${config.base_url}weather?q=${query}&units=metric&APPID=${config.key}`)
-    .then((response) => {
-      return response.json()
-    })
+    .then((response) => response.json())
     .then(displayResults)
 }
 
@@ -24,12 +22,17 @@ function displayResults(weather) {
   if (weather.cod !== 200) {
     return alert('请输入要搜索的城市')
   }
+  search.value = ''
+  if (weather.main.temp > 16) {
+    document.querySelector('body').style.backgroundImage = 'url("warm-bg.jpg")'
+  } else {
+    document.querySelector('body').style.backgroundImage = 'url("cold-bg.jpg")'
+  }
   let city = document.querySelector('.location-box .city')
   city.innerText = `${weather.name}, ${weather.sys.country}`
 
-  let now = new Date()
   let date = document.querySelector('.location-box .date')
-  date.innerText = dateBuilder(now)
+  date.innerText = dateBuilder(new Date())
 
   let temp = document.querySelector('.weather-box .temp')
   temp.style.display = 'inline-block'
